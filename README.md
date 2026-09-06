@@ -1,10 +1,12 @@
-## Compile 4 types of x86 OpenWrt firmware
+# Auto-build x86 OpenWrt Firmware
 
-## Include:
+This repository automates the compilation of x86 OpenWrt firmware for four different distributions using github actions.
+
+## Supported distributions
 - Official OpenWrt
 - Lienol's OpenWrt
-- Immortalwrt
-- Lean's OpenWrt
+- ImmortalWrt
+- Lean's OpenWrt (coolsnowwolf/lede)
 
 
 ## Credits
