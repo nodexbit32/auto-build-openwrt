@@ -1,6 +1,6 @@
-# Auto-build x86 OpenWrt Firmware
+# Auto-build x86 OpenWrt firmware
 
-This repository automates the compilation of x86 OpenWrt firmware for four different distributions using github actions.
+This repository automates building x86 OpenWrt firmware for four distributions using GitHub Actions.
 
 ## Supported distributions
 - Official OpenWrt
@@ -8,12 +8,11 @@ This repository automates the compilation of x86 OpenWrt firmware for four diffe
 - ImmortalWrt
 - Lean's OpenWrt (coolsnowwolf/lede)
 
-
 ## Credits
 - [P3TERX](https://github.com/P3TERX/Actions-OpenWrt)
 - [OpenWrt](https://github.com/openwrt/openwrt)
-- [Lienol's Openwrt](https://github.com/Lienol/openwrt)
-- [Immortalwrt](https://github.com/immortalwrt/immortalwrt)
+- [Lienol's OpenWrt](https://github.com/Lienol/openwrt)
+- [ImmortalWrt](https://github.com/immortalwrt/immortalwrt)
 - [Lean's OpenWrt](https://github.com/coolsnowwolf/lede)
 - [kenzok8](https://github.com/kenzok8/small-package)
 - [Microsoft Azure](https://azure.microsoft.com)
