@@ -21,16 +21,11 @@ rm -rf feeds/small/luci-app-clashoo
 # =============================================================================
 
 # =============================================================================
-# 4. Fix MosDNS (sbwml 垂直打击版)
+# 4. Fix MosDNS
 # =============================================================================
 # 物理清理残留
 rm -rf feeds/packages/net/mosdns
 rm -rf package/luci-app-mosdns
-rm -rf feeds/small/luci-app-mosdns feeds/small/mosdns
-
-
-# 垂直拉取：直接进 package 目录，避开 feeds 软链接冲突
-git clone --depth=1 https://github.com/sbwml/luci-app-mosdns package/luci-app-mosdns
 
 # =============================================================================
 # 5. 确权与刷新安装索引
