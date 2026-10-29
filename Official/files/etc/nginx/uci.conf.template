@@ -1,45 +1,64 @@
 # This file is re-created when Nginx starts.
-# Consider using UCI or creating files in /etc/nginx/conf.d/ for configuration.
-# Parsing UCI configuration is skipped if uci set nginx.global.uci_enable=false
-# For details see: https://openwrt.org/docs/guide-user/services/webserver/nginx
+
+# Use UCI or /etc/nginx/conf.d/*.conf for customization.
+# Docs: https://openwrt.org/docs/guide-user/services/webserver/nginx
+
 # UCI_CONF_VERSION=1.2
 
+# 自动根据 CPU 设置工作进程
 worker_processes auto;
 
+# 以 root 用户运行（OpenWrt 默认）
 user root;
 
+# 加载所有模块（可扩展）
 include module.d/*.module;
 
 events {}
 
 http {
-	access_log off;
-	log_format openwrt
-		'$request_method $scheme://$host$request_uri => $status'
-		' (${body_bytes_sent}B in ${request_time}s) <- $http_referer';
+	# 统一在这里加一句，全线生效
+    server_tokens off;
 
-	include mime.types;
-	default_type application/octet-stream;
-	sendfile on;
+    # ==========================
+    # 日志配置
 
-	client_max_body_size 0;
-	large_client_header_buffers 4 8k;
+    access_log off;  # 可改为 logd openwrt; 或设置 access_log 路径
 
-	gzip on;
-	gzip_vary on;
-	gzip_proxied any;
+    log_format openwrt
+        '$request_method $scheme://$host$request_uri => $status'
+        ' (${body_bytes_sent}B in ${request_time}s) <- $http_referer';
 
-	root /www;
+    # 内容类型 & 传输参数
 
-	server { #see uci show 'nginx._lan'
-		listen 80;
-		listen [::]:80;
+    include mime.types;
+    default_type application/octet-stream;
+    sendfile on;
+    client_max_body_size 0;
+    large_client_header_buffers 4 8k;
 
-		server_name _lan;
+    # WebSocket 连接升级
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        ''      close;
+    }
 
-		include conf.d/*.locations;
-		access_log off; # logd openwrt;
+    # Gzip 压缩（前端 UI 优化）
+    gzip on;
+    gzip_vary on;
+    gzip_proxied any;
+
+    # 默认根路径（适用于 80 端口 Web 管理）
+    server {
+        listen 80;
+        listen [::]:80;
+        server_name _lan;
+
+		root /www;  # ✅ 恢复这一行
+        include conf.d/*.locations;
+        access_log off;  # 可改为 logd openwrt;
 	}
-
-	include conf.d/*.conf;
+	
+	# 加载所有自定义配置文件（推荐放入 conf.d/）
+    include conf.d/*.conf;
 }
