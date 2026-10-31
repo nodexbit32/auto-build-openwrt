@@ -128,14 +128,6 @@ jobs:
         run: |
             echo "Pwsh version: ${{ steps.package.outputs.aaa }}"
             echo "Bash version: ${{ steps.package.outputs.aaa }}"
-
-      - name: Upload firmware directory
-        uses: actions/upload-artifact@v7
-        if: steps.organize.outputs.status == 'success' && !cancelled()
-        with:
-          name: ${{ env.REPO_NAME }}${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-          path: ${{ env.FIRMWARE }}
-
       - name: Compile the firmware
         id: compile
         run: |
@@ -160,3 +152,12 @@ jobs:
           echo "提取到的型号: $DEVICE"
           echo "最终完美拼接的名字: _${TARGET_BOARD}_${TARGET_SUB}_${DEVICE}"
           echo "=============================================="
+          
+      - name: Upload firmware directory
+        uses: actions/upload-artifact@v7
+        if: steps.organize.outputs.status == 'success' && !cancelled()
+        with:
+          name: ${{ env.REPO_NAME }}${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+          path: ${{ env.FIRMWARE }}
+
+      
