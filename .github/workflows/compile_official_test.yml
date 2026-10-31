@@ -98,12 +98,13 @@ jobs:
           cd openwrt
           $GITHUB_WORKSPACE/$DIY_P1_SH
 
-      - name: Update feeds
-        run: cd openwrt && ./scripts/feeds update -a
+      # - name: Update feeds
+        # run: cd openwrt && ./scripts/feeds update -a
 
-      - name: Install feeds
-        run: cd openwrt && ./scripts/feeds install -a
+      # - name: Install feeds
+        # run: cd openwrt && ./scripts/feeds install -a
 
+      # 这一步是取变量的关键一步,.config从外面移动进来
       - name: Load custom configuration
         run: |
           [ -e $FILES ] && mv $FILES openwrt/files
