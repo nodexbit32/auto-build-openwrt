@@ -127,7 +127,7 @@ jobs:
         id: compile
         run: |
           cd openwrt
-          
+
           # 1. 优先在编译前提取变量并写入环境变量
           TARGET_BOARD=$(grep '^CONFIG_TARGET_BOARD=' .config | cut -d'"' -f2)
           TARGET_SUB=$(grep '^CONFIG_TARGET_SUBTARGET=' .config | cut -d'"' -f2)
