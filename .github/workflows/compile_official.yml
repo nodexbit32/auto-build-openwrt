@@ -67,7 +67,6 @@ jobs:
           df -h
           echo "=============================================================================="
 
-
       #=========================================================================================================
       # Checkout and Initialization
       - name: Checkout
@@ -84,9 +83,9 @@ jobs:
 
           sudo timedatectl set-timezone "$TZ"
           sudo chown $USER:$GROUPS $GITHUB_WORKSPACE
-          
+
       #=========================================================================================================
-      
+
       - name: Clone source code
         working-directory: ./
         run: |
