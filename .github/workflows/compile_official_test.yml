@@ -129,11 +129,12 @@ jobs:
             echo "Pwsh version: ${{ steps.package.outputs.aaa }}"
             echo "Bash version: ${{ steps.package.outputs.aaa }}"
 
-      - name: Upload firmware directory
-        uses: actions/upload-artifact@main
+       name: Upload firmware directory
+        uses: actions/upload-artifact@v7
+        if: steps.organize.outputs.status == 'success' && !cancelled()
         with:
-          name: $DIST_NAME_${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-          path: ${{ env.DIST_NAME }}
+          name: ${{ env.REPO_NAME }}${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+          path: ${{ env.FIRMWARE }}
 
       - name: Compile the firmware
         id: compile
