@@ -58,9 +58,7 @@ jobs:
           sudo apt-get clean
           sudo rm -rf /var/lib/apt/lists/*
 
-          echo "=== 4. 清理 Homebrew 与 NPM 缓存 ==="
-          brew cleanup --prune=all || true
-          rm -rf ~/.cache/Homebrew || true
+          echo "=== 4. 清理 NPM 缓存 ==="
           npm cache clean --force || true
 
           echo "=== 清理后磁盘空间 ==="
@@ -83,7 +81,6 @@ jobs:
 
           sudo timedatectl set-timezone "$TZ"
           sudo chown $USER:$GROUPS $GITHUB_WORKSPACE
-
       #=========================================================================================================
 
       - name: Clone source code
@@ -127,8 +124,8 @@ jobs:
         id: compile
         run: |
           cd openwrt
-
-          # 1. 优先在编译前提取变量并写入环境变量
+          
+          # 1. 编译前优先提取变量并注入环境变量（避免中途报错导致变量丢失）
           TARGET_BOARD=$(grep '^CONFIG_TARGET_BOARD=' .config | cut -d'"' -f2)
           TARGET_SUB=$(grep '^CONFIG_TARGET_SUBTARGET=' .config | cut -d'"' -f2)
           DEVICE=$(grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/')
@@ -137,10 +134,10 @@ jobs:
           echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
           echo "=============================================="
-          echo "【编译前确认】架构: $TARGET_BOARD | 型号: $DEVICE"
+          echo "【配置预提取】架构: $TARGET_BOARD | 型号: $DEVICE"
           echo "=============================================="
 
-          # 2. 再开始耗时的多线程编译
+          # 2. 执行真正的编译
           echo -e "$(nproc) thread compile"
           make -j$(nproc) || make -j1 || make -j1 V=s
           echo "status=success" >> $GITHUB_OUTPUT
