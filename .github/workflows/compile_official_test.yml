@@ -12,7 +12,7 @@
 name: Compile Official Test
 on:
   repository_dispatch:
-  workflow_dispatch:
+  # workflow_dispatch:
     inputs:
       ssh:
         description: 'SSH connection to Actions'
