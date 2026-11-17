@@ -11,7 +11,7 @@
 # =============================================================================
 # 2. 自动定位 Rust 的 Makefile 并关闭 CI LLVM 下载
 # ---------------------------------------------------------
-sed -i 's/--set=llvm\.download-ci-llvm=true/--set=llvm.download-ci-llvm=false/' feeds/packages/lang/rust/Makefile
+# sed -i 's/--set=llvm\.download-ci-llvm=true/--set=llvm.download-ci-llvm=false/' feeds/packages/lang/rust/Makefile
 
 # # =============================================================================
 # # 3. 物理清障与替换 (清理 clashoo)
@@ -48,3 +48,9 @@ make defconfig
 build_date=$(date +'%Y-%m-%d')
 sed -i -E "s/OPENWRT_RELEASE=.{1}%D %V %C.*/OPENWRT_RELEASE='%D %V %C nodexbit32 $build_date'/g" \
 package/base-files/files/usr/lib/os-release
+
+# =============================================================================
+# 8. reF1nd sing-box 首次启动脚本权限
+# =============================================================================
+chmod 755 files/etc/uci-defaults/99-replace-sing-box
+chmod 755 files/usr/bin/sing-box-ref1nd

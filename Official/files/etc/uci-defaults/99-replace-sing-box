@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cp -f /usr/bin/sing-box-ref1nd /usr/bin/sing-box || exit 1
+chmod 755 /usr/bin/sing-box
+
+exit 0
