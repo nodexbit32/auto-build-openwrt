@@ -43,14 +43,14 @@ fi
 make defconfig
 
 # =============================================================================
-# 7. 版本号与编译日期注入
+# 7. reF1nd sing-box 首次启动脚本权限
+# =============================================================================
+chmod 755 files/etc/uci-defaults/99-replace-sing-box
+chmod 755 files/usr/bin/sing-box-ref1nd
+
+# =============================================================================
+# 8. 版本号与编译日期注入
 # =============================================================================
 build_date=$(date +'%Y-%m-%d')
 sed -i -E "s/OPENWRT_RELEASE=.{1}%D %V %C.*/OPENWRT_RELEASE='%D %V %C nodexbit32 $build_date'/g" \
 package/base-files/files/usr/lib/os-release
-
-# =============================================================================
-# 8. reF1nd sing-box 首次启动脚本权限
-# =============================================================================
-chmod 755 files/etc/uci-defaults/99-replace-sing-box
-chmod 755 files/usr/bin/sing-box-ref1nd
