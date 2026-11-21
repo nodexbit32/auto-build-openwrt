@@ -29,6 +29,24 @@ rm -rf package/luci-app-mosdns
 # 5. reF1nd sing-box 整合
 # =============================================================================
 
+# =============================================================================
+# 5.0 暂时禁用 HomeProxy IPv6 DNS 补丁
+# 原因：与当前 reF1nd 1.15.0-alpha.13 源码不兼容
+# =============================================================================
+
+PATCH_FILE="feeds/small/sing-box/patches/110-homeproxy-dns-ipv6-by-outbound.patch"
+DISABLED_FILE="feeds/small/sing-box/110-homeproxy-dns-ipv6-by-outbound.patch.disabled"
+
+if [ -f "$PATCH_FILE" ]; then
+    mv "$PATCH_FILE" "$DISABLED_FILE"
+    echo "已禁用 HomeProxy IPv6 DNS 补丁"
+elif [ -f "$DISABLED_FILE" ]; then
+    echo "HomeProxy IPv6 DNS 补丁已经处于禁用状态"
+else
+    echo "未找到 HomeProxy IPv6 DNS 补丁，跳过"
+fi
+
+# -------------------------------------------------
 # 5.1 删除官方 sing-box，避免与 small 版本冲突
 rm -rf feeds/packages/net/sing-box
 rm -rf package/feeds/packages/sing-box
