@@ -155,10 +155,15 @@ jobs:
           
           echo "===== CONFIG AFTER DEFCONFIG ====="
           grep -E 'CONFIG_PACKAGE_(momo|luci-app-momo|sing-box)' .config
-          echo "===== SING-BOX PACKAGE LINK ====="
-          ls -l package/feeds/small/sing-box
-          ls -l package/feeds/packages/sing-box
-          ls -l package/sing-box
+          
+          echo "===== SING-BOX PACKAGE LOCATIONS ====="
+          find package feeds -maxdepth 4 -type d -name 'sing-box' -print
+
+          echo "===== SMALL FEED PACKAGE LINK ====="
+          ls -la package/feeds/small/ 2>/dev/null | grep -E 'sing|momo'
+
+          echo "===== FEEDS INSTALL RECORD ====="
+          grep -n 'sing-box' tmp/.packageinfo 2>/dev/null | head
           
           make download -j8
           find dl -size -1024c -exec ls -l {} \;
