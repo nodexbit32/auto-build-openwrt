@@ -101,7 +101,25 @@ jobs:
 
       - name: Install feeds
         run: cd openwrt && ./scripts/feeds install -a
+        
+        
+      - name: Record feeds baseline
+        run: |
+          cd openwrt
 
+          echo "===== FEEDS COMMITS ====="
+          for d in feeds/*; do
+            if [ -d "$d/.git" ]; then
+              echo "===== $d ====="
+              git -C "$d" rev-parse HEAD
+            fi
+          done
+
+          echo "===== PACKAGE MAKEFILES ====="
+          sha256sum feeds/small/sing-box/Makefile
+          sha256sum feeds/small/momo/Makefile
+          
+          
       - name: Load custom configuration
         run: |
           [ -e $FILES ] && mv $FILES openwrt/files
@@ -110,6 +128,24 @@ jobs:
           chmod +x $DIY_P2_SH
           cd openwrt
           $GITHUB_WORKSPACE/$DIY_P2_SH
+          
+      - name: Verify build configuration
+        run: |
+          cd openwrt
+
+          echo "===== CONFIG ====="
+          grep -E 'CONFIG_PACKAGE_(momo|luci-app-momo|sing-box)=' .config
+
+          echo "===== SING-BOX MAKEFILE ====="
+          grep -E '^(PKG_NAME|PKG_UPSTREAM_VERSION|PKG_VERSION|PKG_SOURCE_URL|PKG_HASH):=' feeds/small/sing-box/Makefile
+
+          echo "===== MOMO DEPENDENCY ====="
+          grep -n 'DEPENDS' feeds/small/momo/Makefile
+
+          echo "===== PATCH STATUS ====="
+          ls -l feeds/small/sing-box/110-homeproxy-dns-ipv6-by-outbound.patch.disabled
+          test ! -e feeds/small/sing-box/patches/110-homeproxy-dns-ipv6-by-outbound.patch
+
 
       - name: Download package
         id: package
