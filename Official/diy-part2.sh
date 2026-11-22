@@ -37,7 +37,7 @@ rm -rf package/feeds/packages/sing-box
 
 # -----------------------------------------------------------------------------
 # 5.2 更新并重新安装 feeds
-# 先确定 feeds 源码和软件包链接，再修改 small sing-box
+# 重要,先更新确保small sing-box 生效, 不然会找不到sing-box, 再修改 small sing-box
 # -----------------------------------------------------------------------------
 ./scripts/feeds update -a
 ./scripts/feeds install -a
