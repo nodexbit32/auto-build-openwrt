@@ -29,9 +29,22 @@ rm -rf package/luci-app-mosdns
 # 5. reF1nd sing-box 整合
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# 5.1 删除官方 sing-box，避免与 small 版本冲突
+# -----------------------------------------------------------------------------
+rm -rf feeds/packages/net/sing-box
+rm -rf package/feeds/packages/sing-box
+
+# -----------------------------------------------------------------------------
+# 5.2 更新并重新安装 feeds
+# 先确定 feeds 源码和软件包链接，再修改 small sing-box
+# -----------------------------------------------------------------------------
+./scripts/feeds update -a
+./scripts/feeds install -a
+
 # =============================================================================
-# 5.0 暂时禁用 HomeProxy IPv6 DNS 补丁
-# 原因：与当前 reF1nd 1.15.0-alpha.13 源码不兼容
+# 5.3 暂时禁用 HomeProxy IPv6 DNS 补丁
+# 原因：与当前 reF1nd 源码不兼容
 # =============================================================================
 
 PATCH_FILE="feeds/small/sing-box/patches/110-homeproxy-dns-ipv6-by-outbound.patch"
@@ -46,17 +59,10 @@ else
     echo "未找到 HomeProxy IPv6 DNS 补丁，跳过"
 fi
 
-# -------------------------------------------------
-# 5.1 删除官方 sing-box，避免与 small 版本冲突
-rm -rf feeds/packages/net/sing-box
-rm -rf package/feeds/packages/sing-box
+# =============================================================================
+# 5.4 修改 small sing-box Makefile，自动获取版本和 HASH
+# =============================================================================
 
-
-# 5.2 修改 small sing-box Makefile，自动获取版本和 HASH
-
-# =================================================
-# reF1nd 版本：以后只需要修改这里
-# =================================================
 # 自动获取 reF1nd 最新版本 Tag
 REF1ND_REPO="https://github.com/reF1nd/sing-box.git"
 
@@ -73,7 +79,6 @@ if [ -z "$REF1ND_VERSION" ]; then
 fi
 
 echo "自动获取 reF1nd 版本：$REF1ND_VERSION"
-# -------------------------------------------------
 
 SMALL_SB_MK="feeds/small/sing-box/Makefile"
 SOURCE_URL="https://codeload.github.com/reF1nd/sing-box/tar.gz/v${REF1ND_VERSION}"
@@ -83,9 +88,7 @@ if [ ! -f "$SMALL_SB_MK" ]; then
     exit 1
 fi
 
-# =================================================
 # 自动下载源码并计算 SHA256
-# =================================================
 TMP_ARCHIVE=$(mktemp)
 
 if ! wget -qO "$TMP_ARCHIVE" "$SOURCE_URL"; then
@@ -100,9 +103,7 @@ rm -f "$TMP_ARCHIVE"
 echo "reF1nd Version: $REF1ND_VERSION"
 echo "reF1nd SHA256:  $REF1ND_HASH"
 
-# =================================================
 # 修改 small Makefile
-# =================================================
 sed -i \
     -e "s|^PKG_UPSTREAM_VERSION:=.*|PKG_UPSTREAM_VERSION:=${REF1ND_VERSION}|" \
     -e 's|^PKG_SOURCE_URL:=.*|PKG_SOURCE_URL:=https://codeload.github.com/reF1nd/sing-box/tar.gz/v$(PKG_UPSTREAM_VERSION)?|' \
@@ -116,10 +117,6 @@ if ! grep -q 'patsubst %-reF1nd' "$SMALL_SB_MK"; then
 fi
 
 echo "--- reF1nd sing-box Makefile 修改完成 ---"
-
-
-# 5.3 安装 feeds
-./scripts/feeds install -a
 
 # =============================================================================
 # 6. 配置回填与依赖补全
