@@ -101,25 +101,7 @@ jobs:
 
       - name: Install feeds
         run: cd openwrt && ./scripts/feeds install -a
-        
-        
-      - name: Record feeds baseline
-        run: |
-          cd openwrt
 
-          echo "===== FEEDS COMMITS ====="
-          for d in feeds/*; do
-            if [ -d "$d/.git" ]; then
-              echo "===== $d ====="
-              git -C "$d" rev-parse HEAD
-            fi
-          done
-
-          echo "===== PACKAGE MAKEFILES ====="
-          sha256sum feeds/small/sing-box/Makefile
-          sha256sum feeds/small/momo/Makefile
-          
-          
       - name: Load custom configuration
         run: |
           [ -e $FILES ] && mv $FILES openwrt/files
@@ -128,43 +110,12 @@ jobs:
           chmod +x $DIY_P2_SH
           cd openwrt
           $GITHUB_WORKSPACE/$DIY_P2_SH
-          
-      - name: Verify build configuration
-        run: |
-          cd openwrt
-
-          echo "===== CONFIG ====="
-          grep -E 'CONFIG_PACKAGE_(momo|luci-app-momo|sing-box)=' .config
-
-          echo "===== SING-BOX MAKEFILE ====="
-          grep -E '^(PKG_NAME|PKG_UPSTREAM_VERSION|PKG_VERSION|PKG_SOURCE_URL|PKG_HASH):=' feeds/small/sing-box/Makefile
-
-          echo "===== MOMO DEPENDENCY ====="
-          grep -n 'DEPENDS' feeds/small/momo/Makefile
-
-          echo "===== PATCH STATUS ====="
-          ls -l feeds/small/sing-box/110-homeproxy-dns-ipv6-by-outbound.patch.disabled
-          test ! -e feeds/small/sing-box/patches/110-homeproxy-dns-ipv6-by-outbound.patch
-
 
       - name: Download package
         id: package
         run: |
           cd openwrt
           make defconfig
-          
-          echo "===== CONFIG AFTER DEFCONFIG ====="
-          grep -E 'CONFIG_PACKAGE_(momo|luci-app-momo|sing-box)' .config
-          
-          echo "===== SING-BOX PACKAGE LOCATIONS ====="
-          find package feeds -maxdepth 4 -type d -name 'sing-box' -print
-
-          echo "===== SMALL FEED PACKAGE LINK ====="
-          ls -la package/feeds/small/ 2>/dev/null | grep -E 'sing|momo'
-
-          echo "===== FEEDS INSTALL RECORD ====="
-          grep -n 'sing-box' tmp/.packageinfo 2>/dev/null | head
-          
           make download -j8
           find dl -size -1024c -exec ls -l {} \;
           find dl -size -1024c -exec rm -f {} \;
@@ -173,7 +124,7 @@ jobs:
         id: compile
         run: |
           cd openwrt
-          
+
           # 1. 编译前优先提取变量并注入环境变量（避免中途报错导致变量丢失）
           TARGET_BOARD=$(grep '^CONFIG_TARGET_BOARD=' .config | cut -d'"' -f2)
           TARGET_SUB=$(grep '^CONFIG_TARGET_SUBTARGET=' .config | cut -d'"' -f2)
