@@ -38,7 +38,10 @@ rm -rf package/feeds/packages/sing-box
 # -----------------------------------------------------------------------------
 # 5.2 更新并重新安装 feeds
 # ※※※ 重要 ※※※
-# 必须先保证 small sing-box 确权, 否则会找不到sing-box, 所以要 Update, 如果后确权,修改成果会丢失, 确权之后再修改 small sing-box
+# 必须先更新并安装 feeds，确保 small sing-box 正确注册，
+# 否则构建系统可能找不到 sing-box。
+# 更新操作可能覆盖此前的修改，因此必须在 feeds 更新安装完成后，
+# 再修改 small sing-box Makefile。
 # -----------------------------------------------------------------------------
 ./scripts/feeds update -a
 ./scripts/feeds install -a
